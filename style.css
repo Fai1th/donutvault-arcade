@@ -600,8 +600,7 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   position: absolute;
   left: 0;
   top: 0;
-  width: 8px;
-  height: 8px;
+  width: clamp(12px, 1.55vw, 18px);`r`n  height: clamp(12px, 1.55vw, 18px);
   border-radius: 50%;
   background: radial-gradient(circle at 35% 28%, #fff6c9, var(--gold) 46%, #ad6812 100%);
   box-shadow: 0 0 24px rgba(255,209,102,.52);
@@ -673,3 +672,27 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   .deck-shoe { position: static; margin-bottom: 12px; }
 }
 
+
+
+/* Account system */
+.account-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 16px; }
+.account-card, .account-mini {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+}
+.profile-card, .account-mini { display: flex; align-items: center; gap: 18px; }
+.mc-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+  image-rendering: pixelated;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.25);
+  box-shadow: 0 14px 40px rgba(0,0,0,.25);
+}
+.account-mini span { display: block; color: var(--muted); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .1em; }
+.account-mini strong { display: block; margin: 4px 0; font-size: 28px; letter-spacing: -.04em; }
+.account-mini p, .account-card p { color: var(--muted); line-height: 1.55; }
+@media (max-width: 900px) { .account-grid { grid-template-columns: 1fr; } .profile-card, .account-mini { align-items: flex-start; flex-direction: column; } }

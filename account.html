@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account | DonutVault</title>
+  <link rel="icon" href="assets/donutvault-logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <nav class="nav"><a class="brand" href="index.html"><img class="brand-logo" src="assets/donutvault-logo.png" alt="DonutVault logo" /><div><strong>DonutVault</strong><span>DonutSMP Arcade</span></div></a><div class="nav-links"><a href="index.html">Home</a><a href="games.html">Games</a><a href="wallet.html">Wallet</a><a href="account.html">Account</a><a href="about.html">About</a></div><div class="nav-actions"><a class="primary small" href="games.html"><span class="i i-joystick"></span>Play</a></div></nav>
+  <main>
+    <section class="page-hero"><p class="eyebrow">Player account</p><h1>Connect your Minecraft username.</h1><p class="subtext">This links the arcade wallet to a Minecraft name for deposits and payout instructions. Current version is local/browser saved; verification can come next.</p></section>
+    <section class="section account-grid">
+      <article class="account-card profile-card">
+        <img class="mc-avatar js-mc-avatar" src="assets/donutvault-logo.png" alt="Minecraft avatar" />
+        <div><p class="eyebrow">Connected as</p><h2 class="js-mc-name">Not connected</h2><p>Connected: <span id="accountConnectedAt">Not connected yet</span></p></div>
+      </article>
+      <article class="account-card">
+        <h3><span class="i i-wallet"></span>Link username</h3>
+        <p>Enter the exact Minecraft username you use on DonutSMP.</p>
+        <label>Minecraft username</label><input id="mcUsername" maxlength="16" placeholder="fai1th_" />
+        <button class="primary full" id="connectMcBtn">Connect Minecraft</button>
+        <button class="secondary full" id="disconnectMcBtn">Disconnect</button>
+      </article>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div><script src="app.js"></script>
+</body>
+</html>
