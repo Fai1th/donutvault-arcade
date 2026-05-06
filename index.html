@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DonutVault Arcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="noise"></div>
+
+  <nav class="nav">
+    <div class="brand">
+      <div class="brand-mark">D</div>
+      <div>
+        <strong>DonutVault</strong>
+        <span>DonutSMP Arcade</span>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="ghost" id="dailyBonusBtn">Daily Bonus</button>
+      <button class="primary small" id="openWalletBtn">Wallet</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Play with DonutSMP money</p>
+        <h1>The arcade where your SMP balance gets interesting.</h1>
+        <p class="subtext">Deposit DonutSMP cash, play fast mini-games, and withdraw back to Minecraft. Built as a virtual arcade — no real money, no crypto, no sketchy stuff.</p>
+        <div class="hero-buttons">
+          <button class="primary" id="heroWalletBtn">Open Wallet</button>
+          <a class="secondary" href="#games">View Games</a>
+        </div>
+      </div>
+
+      <div class="balance-card">
+        <div class="balance-top">
+          <span>Arcade Balance</span>
+          <span class="live-pill">LIVE</span>
+        </div>
+        <div class="balance" id="balanceDisplay">$0</div>
+        <div class="balance-meta">
+          <div><span>Level</span><strong id="levelDisplay">1</strong></div>
+          <div><span>XP</span><strong id="xpDisplay">0 / 100</strong></div>
+          <div><span>Streak</span><strong id="streakDisplay">0d</strong></div>
+        </div>
+        <div class="pulse-line"></div>
+      </div>
+    </section>
+
+    <section class="wallet-panel" id="walletPanel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Wallet</p>
+          <h2>Deposit and withdraw</h2>
+        </div>
+        <button class="icon-btn" id="closeWalletBtn">×</button>
+      </div>
+
+      <div class="wallet-grid">
+        <article class="wallet-box">
+          <h3>Deposit</h3>
+          <p>Pay the cashier account in-game, then enter the amount here to credit your arcade balance.</p>
+          <label>Minecraft username</label>
+          <input id="depositUser" placeholder="fai1th_" />
+          <label>Amount paid</label>
+          <input id="depositAmount" type="number" min="1" placeholder="10000" />
+          <button class="primary full" id="depositBtn">Credit Deposit</button>
+          <small>Cashier account placeholder: <b>DonutVaultPay</b></small>
+        </article>
+
+        <article class="wallet-box accent">
+          <h3>Withdraw</h3>
+          <p>Enter your MC username and amount. In the automated version, the Minecraft cashier bot pays you instantly.</p>
+          <label>Minecraft username</label>
+          <input id="withdrawUser" placeholder="fai1th_" />
+          <label>Amount to withdraw</label>
+          <input id="withdrawAmount" type="number" min="1" placeholder="5000" />
+          <button class="primary full" id="withdrawBtn">Request Instant Payout</button>
+          <small>No approval queue — just a payout instruction for the cashier system.</small>
+        </article>
+      </div>
+
+      <div class="activity">
+        <h3>Activity</h3>
+        <div id="activityLog" class="activity-log"></div>
+      </div>
+    </section>
+
+    <section class="section" id="games">
+      <div class="section-head">
+        <p class="eyebrow">Games</p>
+        <h2>Choose your lane</h2>
+      </div>
+      <div class="games-grid">
+        <button class="game-card" data-game="Mines">
+          <span class="game-icon">✦</span>
+          <h3>Mines</h3>
+          <p>Dodge hidden bombs and cash out before greed wins.</p>
+          <b>Coming next</b>
+        </button>
+        <button class="game-card" data-game="Dice">
+          <span class="game-icon">◆</span>
+          <h3>Dice</h3>
+          <p>Pick your odds, roll clean, stack small wins.</p>
+          <b>Coming next</b>
+        </button>
+        <button class="game-card" data-game="Pulse">
+          <span class="game-icon">◌</span>
+          <h3>Pulse</h3>
+          <p>A unique timing game: stop the pulse in the green zone.</p>
+          <b>Unique mode</b>
+        </button>
+        <button class="game-card" data-game="Vault">
+          <span class="game-icon">▣</span>
+          <h3>Vault</h3>
+          <p>Open vault doors with rising multipliers and rising risk.</p>
+          <b>Unique mode</b>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
