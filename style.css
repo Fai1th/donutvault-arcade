@@ -600,8 +600,8 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   position: absolute;
   left: 0;
   top: 0;
-  width: 14px;
-  height: 14px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 28%, #fff6c9, var(--gold) 46%, #ad6812 100%);
   box-shadow: 0 0 24px rgba(255,209,102,.52);
@@ -672,3 +672,4 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   .casino-hud { grid-template-columns: 1fr; }
   .deck-shoe { position: static; margin-bottom: 12px; }
 }
+
