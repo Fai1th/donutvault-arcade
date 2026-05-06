@@ -53,15 +53,10 @@ body {
 }
 
 .brand { display: flex; gap: 12px; align-items: center; }
-.brand-mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
+.brand-logo {
+  width: 46px;
+  height: 46px;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--pink), var(--cyan));
-  color: #08070b;
-  font-weight: 900;
   box-shadow: 0 0 32px rgba(255,79,216,.35);
 }
 .brand strong, .brand span { display: block; }

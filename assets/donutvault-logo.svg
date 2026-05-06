@@ -1,0 +1,37 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="42%" r="65%">
+      <stop offset="0%" stop-color="#2B2142"/>
+      <stop offset="52%" stop-color="#111019"/>
+      <stop offset="100%" stop-color="#08070B"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="104" y1="88" x2="424" y2="424" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF4FD8"/>
+      <stop offset="0.48" stop-color="#FFD166"/>
+      <stop offset="1" stop-color="#45E7FF"/>
+    </linearGradient>
+    <linearGradient id="vault" x1="154" y1="180" x2="360" y2="382" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5CFF9D"/>
+      <stop offset="1" stop-color="#45E7FF"/>
+    </linearGradient>
+    <filter id="shadow" x="40" y="40" width="432" height="432" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#000000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#FF4FD8" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bgGlow)"/>
+  <circle cx="256" cy="256" r="162" stroke="url(#ring)" stroke-width="42" filter="url(#shadow)"/>
+  <circle cx="256" cy="256" r="76" fill="#08070B" stroke="rgba(255,255,255,0.13)" stroke-width="10"/>
+
+  <path d="M172 246C172 219.49 193.49 198 220 198H292C318.51 198 340 219.49 340 246V356H172V246Z" fill="url(#vault)"/>
+  <path d="M204 198V178C204 149.281 227.281 126 256 126C284.719 126 308 149.281 308 178V198" stroke="#F6F1FF" stroke-width="24" stroke-linecap="round"/>
+  <rect x="192" y="222" width="128" height="110" rx="24" fill="#08070B" fill-opacity="0.58"/>
+  <circle cx="256" cy="276" r="28" fill="#FFD166"/>
+  <rect x="248" y="300" width="16" height="38" rx="8" fill="#FFD166"/>
+
+  <circle cx="150" cy="156" r="18" fill="#FFD166"/>
+  <circle cx="356" cy="140" r="14" fill="#FF4FD8"/>
+  <circle cx="380" cy="336" r="16" fill="#45E7FF"/>
+  <circle cx="132" cy="330" r="12" fill="#5CFF9D"/>
+</svg>
