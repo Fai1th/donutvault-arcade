@@ -511,3 +511,100 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   .card-table { grid-template-columns: 1fr; }
   .mines-board { width: min(100%, 360px); }
 }
+
+/* Suspense / casino animation pass */
+.brand-logo {
+  object-fit: cover;
+  background: rgba(0,0,0,.35);
+}
+.tile {
+  font-size: clamp(18px, 4vw, 30px);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+}
+.tile:not(:disabled):hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 14px 36px rgba(69,231,255,.16); }
+.tile.scanning {
+  animation: tileScan .52s ease infinite alternate;
+  border-color: rgba(255,209,102,.7);
+}
+.tile.safe {
+  color: var(--cyan);
+  text-shadow: 0 0 18px rgba(69,231,255,.6);
+  animation: diamondPop .42s cubic-bezier(.2,1.5,.4,1);
+}
+.tile.mine {
+  animation: bombPop .5s cubic-bezier(.2,1.4,.4,1);
+  font-size: clamp(20px, 4vw, 32px);
+}
+@keyframes tileScan { from { filter: brightness(1); } to { filter: brightness(1.35); transform: translateY(-2px); } }
+@keyframes diamondPop { 0% { transform: scale(.55) rotate(-18deg); } 70% { transform: scale(1.14) rotate(8deg); } 100% { transform: scale(1); } }
+@keyframes bombPop { 0% { transform: scale(.55); } 45% { transform: scale(1.22); box-shadow: 0 0 42px rgba(255,91,127,.42); } 100% { transform: scale(1); } }
+
+.card-table {
+  position: relative;
+  padding: 18px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(92,255,157,.12), transparent 38%),
+    linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+  border: 1px solid rgba(255,255,255,.09);
+}
+.cards { perspective: 900px; }
+.card {
+  position: relative;
+  transform-origin: center;
+}
+.card.dealt { animation: dealCard .48s cubic-bezier(.18,.9,.22,1.1) both; }
+.card.back {
+  background:
+    linear-gradient(135deg, rgba(255,79,216,.85), rgba(69,231,255,.7)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.16) 0 4px, transparent 4px 8px);
+  color: transparent;
+}
+.card.back:after {
+  content: "D";
+  color: rgba(8,7,11,.75);
+  font-size: 30px;
+  font-weight: 900;
+}
+@keyframes dealCard {
+  from { opacity: 0; transform: translateY(-34px) rotate(-8deg) scale(.85); }
+  to { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+}
+.coin-display.flipping {
+  color: transparent;
+  animation: coinSpin .12s linear infinite, coinGlow .8s ease-in-out infinite alternate;
+}
+.coin-display.flipping:after {
+  content: "$";
+  color: rgba(8,7,11,.75);
+}
+@keyframes coinSpin { to { transform: rotateY(180deg) rotateZ(12deg); } }
+@keyframes coinGlow { from { box-shadow: 0 20px 70px rgba(255,209,102,.22); } to { box-shadow: 0 20px 90px rgba(255,209,102,.45); } }
+.dice-result.rolling { animation: dicePulse .16s ease infinite alternate; color: var(--gold); }
+@keyframes dicePulse { from { transform: scale(.98); } to { transform: scale(1.03); text-shadow: 0 0 30px rgba(255,209,102,.35); } }
+.plinko-board {
+  position: relative;
+  min-height: 310px;
+  overflow: hidden;
+}
+.plinko-ball {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #fff6c9, var(--gold) 46%, #ad6812 100%);
+  box-shadow: 0 0 24px rgba(255,209,102,.52);
+  transition: left .15s ease, top .15s ease;
+  z-index: 3;
+}
+.plinko-slots span.hit {
+  animation: slotHit .55s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes slotHit { 0% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.08); } 100% { transform: translateY(-2px) scale(1); } }
+.game-stage.active {
+  animation: tableReveal .28s ease both;
+}
+@keyframes tableReveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
