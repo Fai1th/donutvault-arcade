@@ -1,4 +1,6 @@
 const HOUSE_EDGE = 0.04;
+const MINES_GRID_SIZE = 5;
+const MINES_TILE_COUNT = MINES_GRID_SIZE * MINES_GRID_SIZE;
 const state = loadState();
 const session = { plays: 0, wagered: 0 };
 let minesRound = null;
@@ -146,7 +148,7 @@ function switchTab(target) {
 function renderMines() {
   const board = document.getElementById('minesBoard');
   board.innerHTML = '';
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < MINES_TILE_COUNT; i++) {
     const btn = document.createElement('button');
     btn.className = 'tile';
     btn.textContent = minesRound?.revealed.includes(i) ? '✓' : '?';
@@ -164,7 +166,7 @@ function startMines() {
   const err = chargeBet(bet);
   if (err) return toast(err);
   const mines = new Set();
-  while (mines.size < mineCount) mines.add(randInt(25));
+  while (mines.size < mineCount) mines.add(randInt(MINES_TILE_COUNT));
   minesRound = { bet, mineCount, mines: [...mines], revealed: [], ended: false, mult: 1 };
   setStatus('minesStatus', `Round started. ${mineCount} mines hidden. Current cashout: ${money(bet)}.`);
   renderMines();
@@ -172,11 +174,11 @@ function startMines() {
 
 function currentMinesMult() {
   if (!minesRound) return 1;
-  const safeTotal = 25 - minesRound.mineCount;
+  const safeTotal = MINES_TILE_COUNT - minesRound.mineCount;
   const safePicked = minesRound.revealed.length;
   if (safePicked === 0) return 1;
   let survivalOdds = 1;
-  for (let i = 0; i < safePicked; i++) survivalOdds *= (safeTotal - i) / (25 - i);
+  for (let i = 0; i < safePicked; i++) survivalOdds *= (safeTotal - i) / (MINES_TILE_COUNT - i);
   return payoutMultiplier(survivalOdds);
 }
 

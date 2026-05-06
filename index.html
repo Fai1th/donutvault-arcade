@@ -22,8 +22,8 @@
       </div>
     </div>
     <div class="nav-actions">
-      <button class="ghost" id="dailyBonusBtn">Daily Bonus</button>
-      <button class="primary small" id="openWalletBtn">Wallet</button>
+      <button class="ghost" id="dailyBonusBtn"><span class="i i-gift"></span>Daily Bonus</button>
+      <button class="primary small" id="openWalletBtn"><span class="i i-wallet"></span>Wallet</button>
     </div>
   </nav>
 
@@ -34,8 +34,8 @@
         <h1>The arcade where your SMP balance gets interesting.</h1>
         <p class="subtext">Deposit DonutSMP cash, play fast mini-games, and withdraw back to Minecraft. Built as a virtual arcade — no real money, no crypto, no sketchy stuff.</p>
         <div class="hero-buttons">
-          <button class="primary" id="heroWalletBtn">Open Wallet</button>
-          <a class="secondary" href="#games">Play Games</a>
+          <button class="primary" id="heroWalletBtn"><span class="i i-wallet"></span>Open Wallet</button>
+          <a class="secondary" href="#games"><span class="i i-joystick"></span>Play Games</a>
         </div>
       </div>
 
@@ -46,16 +46,16 @@
         </div>
         <div class="balance" id="balanceDisplay">$0</div>
         <div class="balance-meta">
-          <div><span>Level</span><strong id="levelDisplay">1</strong></div>
-          <div><span>XP</span><strong id="xpDisplay">0 / 100</strong></div>
-          <div><span>House Edge</span><strong>4%</strong></div>
+          <div><span><span class="i i-level"></span>Level</span><strong id="levelDisplay">1</strong></div>
+          <div><span><span class="i i-spark"></span>XP</span><strong id="xpDisplay">0 / 100</strong></div>
+          <div><span><span class="i i-percent"></span>House Edge</span><strong>4%</strong></div>
         </div>
         <div class="pulse-line"></div>
       </div>
     </section>
 
     <section class="notice">
-      <strong>Fair-play note:</strong> games use transparent odds with a small house edge. Players can win, but the arcade is designed to win long-term. DonutSMP/in-game currency only — no real-money gambling.
+      <span class="notice-icon i i-shield"></span><strong>Fair-play note:</strong> games use transparent odds with a small house edge. Players can win, but the arcade is designed to win long-term. DonutSMP/in-game currency only — no real-money gambling.
     </section>
 
     <section class="wallet-panel" id="walletPanel">
@@ -69,30 +69,30 @@
 
       <div class="wallet-grid">
         <article class="wallet-box">
-          <h3>Deposit</h3>
+          <h3><span class="i i-arrow-down"></span>Deposit</h3>
           <p>Pay the cashier account in-game, then enter the amount here to credit your arcade balance.</p>
           <label>Minecraft username</label>
           <input id="depositUser" placeholder="fai1th_" />
           <label>Amount paid</label>
           <input id="depositAmount" type="number" min="1" placeholder="10000" />
-          <button class="primary full" id="depositBtn">Credit Deposit</button>
+          <button class="primary full" id="depositBtn"><span class="i i-arrow-down"></span>Credit Deposit</button>
           <small>Cashier account placeholder: <b>DonutVaultPay</b></small>
         </article>
 
         <article class="wallet-box accent">
-          <h3>Withdraw</h3>
+          <h3><span class="i i-arrow-up"></span>Withdraw</h3>
           <p>Enter your MC username and amount. The automated version needs a Minecraft cashier account that can run payout commands.</p>
           <label>Minecraft username</label>
           <input id="withdrawUser" placeholder="fai1th_" />
           <label>Amount to withdraw</label>
           <input id="withdrawAmount" type="number" min="1" placeholder="5000" />
-          <button class="primary full" id="withdrawBtn">Request Instant Payout</button>
+          <button class="primary full" id="withdrawBtn"><span class="i i-arrow-up"></span>Request Instant Payout</button>
           <small>No approval queue — just a payout instruction for the cashier system.</small>
         </article>
       </div>
 
       <div class="activity">
-        <h3>Activity</h3>
+        <h3><span class="i i-list"></span>Activity</h3>
         <div id="activityLog" class="activity-log"></div>
       </div>
     </section>
@@ -107,26 +107,26 @@
       </div>
 
       <div class="game-tabs">
-        <button class="tab active" data-target="minesGame">Mines</button>
-        <button class="tab" data-target="diceGame">Dice</button>
-        <button class="tab" data-target="pulseGame">Pulse</button>
-        <button class="tab" data-target="vaultGame">Vault</button>
+        <button class="tab active" data-target="minesGame"><span class="i i-mines"></span>Mines</button>
+        <button class="tab" data-target="diceGame"><span class="i i-dice"></span>Dice</button>
+        <button class="tab" data-target="pulseGame"><span class="i i-pulse"></span>Pulse</button>
+        <button class="tab" data-target="vaultGame"><span class="i i-vault"></span>Vault</button>
       </div>
 
       <div class="game-stage active" id="minesGame">
         <div class="game-info">
           <div>
-            <h3>Mines</h3>
-            <p>Dodge the bombs. Every safe tile raises your cashout multiplier.</p>
+            <h3><span class="game-title-icon i i-mines"></span>Mines</h3>
+            <p>5x5 grid. Dodge the bombs. Every safe tile raises your cashout multiplier.</p>
           </div>
-          <span>Edge: 4%</span>
+          <span>5x5 · Edge: 4%</span>
         </div>
         <div class="controls">
           <label>Bet</label><input id="minesBet" type="number" min="1" value="1000" />
           <label>Mines</label>
           <select id="minesCount"><option>3</option><option>5</option><option>8</option></select>
-          <button class="primary" id="minesStart">Start</button>
-          <button class="secondary" id="minesCashout">Cash out</button>
+          <button class="primary" id="minesStart"><span class="i i-play"></span>Start</button>
+          <button class="secondary" id="minesCashout"><span class="i i-cash"></span>Cash out</button>
         </div>
         <div class="mini-status" id="minesStatus">Place a bet and start a round.</div>
         <div class="mines-board" id="minesBoard"></div>
@@ -135,7 +135,7 @@
       <div class="game-stage" id="diceGame">
         <div class="game-info">
           <div>
-            <h3>Dice</h3>
+            <h3><span class="game-title-icon i i-dice"></span>Dice</h3>
             <p>Pick a target. Roll over it to win. Higher risk = bigger multiplier.</p>
           </div>
           <span>Edge: 4%</span>
@@ -143,7 +143,7 @@
         <div class="controls">
           <label>Bet</label><input id="diceBet" type="number" min="1" value="1000" />
           <label>Roll over</label><input id="diceTarget" type="number" min="5" max="95" value="55" />
-          <button class="primary" id="diceRoll">Roll Dice</button>
+          <button class="primary" id="diceRoll"><span class="i i-dice"></span>Roll Dice</button>
         </div>
         <div class="dice-result" id="diceResult">--</div>
         <div class="mini-status" id="diceStatus">Win chance and payout update from your target.</div>
@@ -152,7 +152,7 @@
       <div class="game-stage" id="pulseGame">
         <div class="game-info">
           <div>
-            <h3>Pulse</h3>
+            <h3><span class="game-title-icon i i-pulse"></span>Pulse</h3>
             <p>Stop the moving pulse inside the green zone. Smaller zone, bigger payout.</p>
           </div>
           <span>Skill + edge</span>
@@ -161,8 +161,8 @@
           <label>Bet</label><input id="pulseBet" type="number" min="1" value="1000" />
           <label>Difficulty</label>
           <select id="pulseDifficulty"><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select>
-          <button class="primary" id="pulseStart">Start Pulse</button>
-          <button class="secondary" id="pulseStop">Stop</button>
+          <button class="primary" id="pulseStart"><span class="i i-play"></span>Start Pulse</button>
+          <button class="secondary" id="pulseStop"><span class="i i-stop"></span>Stop</button>
         </div>
         <div class="pulse-track"><div class="pulse-zone" id="pulseZone"></div><div class="pulse-dot" id="pulseDot"></div></div>
         <div class="mini-status" id="pulseStatus">Start the pulse, then stop inside the green zone.</div>
@@ -171,15 +171,15 @@
       <div class="game-stage" id="vaultGame">
         <div class="game-info">
           <div>
-            <h3>Vault</h3>
+            <h3><span class="game-title-icon i i-vault"></span>Vault</h3>
             <p>Open doors for rising multipliers. One bad door wipes the run.</p>
           </div>
           <span>Edge: 4%</span>
         </div>
         <div class="controls">
           <label>Bet</label><input id="vaultBet" type="number" min="1" value="1000" />
-          <button class="primary" id="vaultStart">Start Vault</button>
-          <button class="secondary" id="vaultCashout">Cash out</button>
+          <button class="primary" id="vaultStart"><span class="i i-play"></span>Start Vault</button>
+          <button class="secondary" id="vaultCashout"><span class="i i-cash"></span>Cash out</button>
         </div>
         <div class="mini-status" id="vaultStatus">Start a vault run.</div>
         <div class="vault-doors" id="vaultDoors"></div>
@@ -191,3 +191,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
