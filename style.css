@@ -488,16 +488,23 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   background: radial-gradient(circle at 35% 30%, #fff1a8, var(--gold) 45%, #b06d18 100%);
   box-shadow: 0 20px 70px rgba(255,209,102,.22);
 }
-.plinko-board {
-  padding: 18px 0;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: radial-gradient(circle at 50% 0%, rgba(69,231,255,.13), rgba(0,0,0,.18));
+.plinko-arena {
+  width: min(100%, 760px);
+  margin: 0 auto;
 }
-.peg-row { display: flex; justify-content: center; gap: 24px; margin: 10px 0; }
+.plinko-board {
+  width: 100%;
+  padding: 28px 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 24px 24px 0 0;
+  background: radial-gradient(circle at 50% 0%, rgba(69,231,255,.16), rgba(0,0,0,.18));
+}
+.peg-row { display: flex; justify-content: center; gap: clamp(18px, 4.4vw, 42px); margin: 11px 0; }
 .peg-row span { width: 10px; height: 10px; border-radius: 50%; background: rgba(246,241,255,.72); box-shadow: 0 0 12px rgba(69,231,255,.35); }
-.plinko-slots { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; margin: 0 0 16px; align-items: stretch; }
-.plinko-slots span { position: relative; min-height: 58px; display: grid; place-items: center; text-align: center; padding: 0 4px; border-radius: 14px; background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.045)); color: var(--text); font-size: 13px; font-weight: 900; border: 1px solid var(--line); overflow: hidden; }
+.plinko-slots { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 0; margin: 0 0 16px; align-items: stretch; width: 100%; }
+.plinko-slots span { position: relative; min-height: 68px; display: grid; place-items: center; text-align: center; padding: 0 4px; border-radius: 0; background: linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.045)); color: var(--text); font-size: 13px; font-weight: 900; border: 1px solid var(--line); border-left: 0; overflow: hidden; }
+.plinko-slots span:first-child { border-left: 1px solid var(--line); border-bottom-left-radius: 16px; }
+.plinko-slots span:last-child { border-bottom-right-radius: 16px; }
 .plinko-slots span:before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 7px; background: linear-gradient(90deg, var(--pink), var(--gold), var(--cyan)); opacity: .75; }
 .plinko-slots span.hit { color: #08070b; background: var(--gold); transform: translateY(-2px); }
 .plinko-slots span.hit:before { background: rgba(8,7,11,.32); opacity: 1; }
@@ -586,13 +593,13 @@ button .i, a .i, .tab .i { margin-right: 8px; }
 @keyframes dicePulse { from { transform: scale(.98); } to { transform: scale(1.03); text-shadow: 0 0 30px rgba(255,209,102,.35); } }
 .plinko-board {
   position: relative;
-  min-height: 310px;
+  min-height: 460px;
   overflow: hidden;
 }
 .plinko-ball {
   position: absolute;
   left: calc(50% - 12px);
-  top: 18px;
+  top: 30px;
   width: 24px;
   height: 24px;
   margin-left: 0;
