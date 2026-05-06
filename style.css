@@ -617,3 +617,59 @@ button .i, a .i, .tab .i { margin-right: 8px; }
   animation: tableReveal .28s ease both;
 }
 @keyframes tableReveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Online casino skill implementation pass */
+.casino-hud {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 18px;
+}
+.casino-hud > div {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.028));
+}
+.casino-hud span { display: block; color: var(--muted); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.casino-hud strong { color: var(--text); font-size: 18px; }
+.blackjack-table, .baccarat-table { overflow: hidden; }
+.deck-shoe {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  width: 74px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: rgba(246,241,255,.8);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  background:
+    linear-gradient(135deg, rgba(255,79,216,.42), rgba(69,231,255,.32)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.14) 0 4px, transparent 4px 8px);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 12px 30px rgba(0,0,0,.28);
+}
+.hand-zone {
+  position: relative;
+  padding: 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.075);
+  background: rgba(0,0,0,.12);
+}
+.hand-zone.side-win {
+  border-color: rgba(92,255,157,.55);
+  box-shadow: inset 0 0 0 1px rgba(92,255,157,.18), 0 0 34px rgba(92,255,157,.12);
+}
+.hand-zone.side-win h4 { color: var(--green); }
+.player-zone { border-color: rgba(69,231,255,.18); }
+.dealer-zone { border-color: rgba(255,79,216,.15); }
+.baccarat-player { border-color: rgba(69,231,255,.18); }
+.baccarat-banker { border-color: rgba(255,209,102,.18); }
+@media (max-width: 900px) {
+  .casino-hud { grid-template-columns: 1fr; }
+  .deck-shoe { position: static; margin-bottom: 12px; }
+}
