@@ -1,356 +1,66 @@
 const HOUSE_EDGE = 0.04;
 const MINES_GRID_SIZE = 5;
-const MINES_TILE_COUNT = MINES_GRID_SIZE * MINES_GRID_SIZE;
+const MINES_TILE_COUNT = 25;
 const state = loadState();
 const session = { plays: 0, wagered: 0 };
 let minesRound = null;
-let vaultRound = null;
-let pulseRound = null;
-let pulseAnim = null;
+let blackjackRound = null;
 
-const els = {
-  balance: document.getElementById('balanceDisplay'),
-  level: document.getElementById('levelDisplay'),
-  xp: document.getElementById('xpDisplay'),
-  wallet: document.getElementById('walletPanel'),
-  toast: document.getElementById('toast'),
-  activity: document.getElementById('activityLog'),
-  stats: document.getElementById('sessionStats'),
-  depositUser: document.getElementById('depositUser'),
-  depositAmount: document.getElementById('depositAmount'),
-  withdrawUser: document.getElementById('withdrawUser'),
-  withdrawAmount: document.getElementById('withdrawAmount')
-};
-
-function loadState() {
-  const saved = localStorage.getItem('donutVaultState');
-  if (saved) return JSON.parse(saved);
-  return {
-    balance: 0,
-    xp: 0,
-    level: 1,
-    lastBonus: null,
-    logs: ['Wallet created. Deposit DonutSMP cash to start playing.']
-  };
-}
-
+function $(id) { return document.getElementById(id); }
+function on(id, event, fn) { const el = $(id); if (el) el.addEventListener(event, fn); }
+function loadState() { const saved = localStorage.getItem('donutVaultState'); return saved ? JSON.parse(saved) : { balance: 0, xp: 0, level: 1, lastBonus: null, logs: ['Wallet created. Deposit DonutSMP cash to start playing.'] }; }
 function saveState() { localStorage.setItem('donutVaultState', JSON.stringify(state)); }
-function money(n) { return '$' + Math.floor(Number(n)).toLocaleString(); }
-function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+function money(n) { return '$' + Math.floor(Number(n || 0)).toLocaleString(); }
 function randInt(max) { return Math.floor(Math.random() * max); }
+function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 function payoutMultiplier(trueOdds) { return Math.max(1.01, (1 / trueOdds) * (1 - HOUSE_EDGE)); }
-function getBet(id) { return Math.floor(Number(document.getElementById(id).value)); }
+function getBet(id) { return Math.floor(Number($(id)?.value)); }
+function toast(message) { const el = $('toast'); if (!el) return; el.textContent = message; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2400); }
+function setStatus(id, text, type = '') { const el = $(id); if (!el) return; el.className = 'mini-status ' + type; el.innerHTML = text; }
 
-function chargeBet(amount) {
-  if (!amount || amount <= 0) return 'Enter a valid bet.';
-  if (amount > state.balance) return 'Not enough arcade balance.';
-  state.balance -= amount;
-  session.plays += 1;
-  session.wagered += amount;
-  addXp(Math.min(12, Math.ceil(amount / 1000)), false);
-  saveState();
-  render();
-  return null;
-}
-
-function pay(amount, label) {
-  const win = Math.floor(amount);
-  state.balance += win;
-  addXp(Math.min(20, Math.ceil(win / 1500)), false);
-  if (label) addLog(`<b>${label}:</b> won ${money(win)}.`);
-  saveState();
-  render();
-  return win;
-}
-
-function addLog(text) {
-  state.logs.unshift(text);
-  state.logs = state.logs.slice(0, 8);
-  saveState();
-  render();
-}
-
-function addXp(amount, shouldRender = true) {
-  state.xp += amount;
-  while (state.xp >= 100) {
-    state.xp -= 100;
-    state.level += 1;
-    toast('Level up! You reached level ' + state.level + '.');
-  }
-  if (shouldRender) render();
-}
-
-function toast(message) {
-  els.toast.textContent = message;
-  els.toast.classList.add('show');
-  setTimeout(() => els.toast.classList.remove('show'), 2600);
-}
-
+function addXp(amount) { state.xp += amount; while (state.xp >= 100) { state.xp -= 100; state.level += 1; toast('Level up! You reached level ' + state.level + '.'); } }
+function addLog(text) { state.logs.unshift(text); state.logs = state.logs.slice(0, 8); saveState(); render(); }
 function render() {
-  els.balance.textContent = money(state.balance);
-  els.level.textContent = state.level;
-  els.xp.textContent = state.xp + ' / 100';
-  els.activity.innerHTML = state.logs.map(log => `<div class="log-item">${log}</div>`).join('');
-  els.stats.textContent = `${session.plays} plays · ${money(session.wagered)} wagered`;
+  document.querySelectorAll('#balanceDisplay').forEach(el => el.textContent = money(state.balance));
+  if ($('levelDisplay')) $('levelDisplay').textContent = state.level;
+  if ($('xpDisplay')) $('xpDisplay').textContent = state.xp + ' / 100';
+  if ($('activityLog')) $('activityLog').innerHTML = state.logs.map(log => `<div class="log-item">${log}</div>`).join('');
+  if ($('sessionStats')) $('sessionStats').textContent = `${session.plays} plays · ${money(session.wagered)} wagered`;
 }
+function chargeBet(amount) { if (!amount || amount <= 0) return 'Enter a valid bet.'; if (amount > state.balance) return 'Not enough arcade balance.'; state.balance -= amount; session.plays++; session.wagered += amount; addXp(Math.min(12, Math.ceil(amount / 1000))); saveState(); render(); return null; }
+function pay(amount, label) { const win = Math.floor(amount); state.balance += win; addXp(Math.min(20, Math.ceil(win / 1500))); if (label) addLog(`<b>${label}:</b> won ${money(win)}.`); saveState(); render(); return win; }
 
-function setStatus(id, text, type = '') {
-  const el = document.getElementById(id);
-  el.className = 'mini-status ' + type;
-  el.innerHTML = text;
-}
+function deposit() { const user = $('depositUser')?.value.trim(); const amount = Math.floor(Number($('depositAmount')?.value)); if (!user) return toast('Enter your Minecraft username first.'); if (!amount || amount <= 0) return toast('Enter a valid deposit amount.'); state.balance += amount; addXp(Math.min(40, Math.ceil(amount / 1000))); addLog(`<b>Deposit credited:</b> ${money(amount)} from ${user}.`); if ($('depositAmount')) $('depositAmount').value = ''; toast('Deposit credited.'); }
+function withdraw() { const user = $('withdrawUser')?.value.trim(); const amount = Math.floor(Number($('withdrawAmount')?.value)); if (!user) return toast('Enter your Minecraft username first.'); if (!amount || amount <= 0) return toast('Enter a valid withdrawal amount.'); if (amount > state.balance) return toast('Not enough arcade balance.'); state.balance -= amount; addLog(`<b>Payout instruction:</b> /pay ${user} ${amount.toLocaleString()} DonutSMP cash.`); if ($('withdrawAmount')) $('withdrawAmount').value = ''; toast('Withdrawal created.'); }
+function dailyBonus() { const today = new Date().toDateString(); if (state.lastBonus === today) return toast('Daily bonus already claimed today.'); state.lastBonus = today; state.balance += 500; addXp(15); addLog('<b>Daily bonus:</b> $500 claimed.'); }
 
-function openWallet() { els.wallet.classList.add('open'); els.wallet.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-function closeWallet() { els.wallet.classList.remove('open'); }
+function switchTab(target) { document.querySelectorAll('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.target === target)); document.querySelectorAll('.game-stage').forEach(stage => stage.classList.toggle('active', stage.id === target)); history.replaceState(null, '', '#' + target); }
+function openHashGame() { const id = location.hash.slice(1); if (id && $(id)) switchTab(id); }
 
-function deposit() {
-  const user = els.depositUser.value.trim();
-  const amount = Math.floor(Number(els.depositAmount.value));
-  if (!user) return toast('Enter your Minecraft username first.');
-  if (!amount || amount <= 0) return toast('Enter a valid deposit amount.');
-  state.balance += amount;
-  addXp(Math.min(40, Math.ceil(amount / 1000)), false);
-  addLog(`<b>Deposit credited:</b> ${money(amount)} from ${user}.`);
-  els.depositAmount.value = '';
-  toast('Deposit credited to arcade balance.');
-}
+function renderMines() { const board = $('minesBoard'); if (!board) return; board.innerHTML = ''; for (let i = 0; i < MINES_TILE_COUNT; i++) { const btn = document.createElement('button'); btn.className = 'tile'; btn.textContent = minesRound?.revealed.includes(i) ? '✓' : '?'; if (minesRound?.ended && minesRound.mines.includes(i)) { btn.textContent = '✕'; btn.classList.add('mine'); } if (minesRound?.revealed.includes(i)) btn.classList.add('safe'); btn.disabled = !minesRound || minesRound.ended || minesRound.revealed.includes(i); btn.addEventListener('click', () => pickMineTile(i)); board.appendChild(btn); } }
+function startMines() { const bet = getBet('minesBet'); const mineCount = Number($('minesCount')?.value || 3); const err = chargeBet(bet); if (err) return toast(err); const mines = new Set(); while (mines.size < mineCount) mines.add(randInt(MINES_TILE_COUNT)); minesRound = { bet, mineCount, mines: [...mines], revealed: [], ended: false }; setStatus('minesStatus', `Round started on a 5x5 board. ${mineCount} mines hidden.`); renderMines(); }
+function minesMult() { if (!minesRound || !minesRound.revealed.length) return 1; const safeTotal = MINES_TILE_COUNT - minesRound.mineCount; let odds = 1; for (let i = 0; i < minesRound.revealed.length; i++) odds *= (safeTotal - i) / (MINES_TILE_COUNT - i); return payoutMultiplier(odds); }
+function pickMineTile(i) { if (!minesRound || minesRound.ended) return; if (minesRound.mines.includes(i)) { minesRound.ended = true; addLog(`<b>Mines:</b> lost ${money(minesRound.bet)}.`); setStatus('minesStatus', `Boom. Lost ${money(minesRound.bet)}.`, 'lose'); renderMines(); return; } minesRound.revealed.push(i); const mult = minesMult(); setStatus('minesStatus', `Safe tile. ${mult.toFixed(2)}x · Cashout ${money(minesRound.bet * mult)}.`, 'win'); renderMines(); }
+function cashoutMines() { if (!minesRound || minesRound.ended || !minesRound.revealed.length) return toast('Reveal at least one safe tile first.'); const won = pay(minesRound.bet * minesMult(), 'Mines cashout'); minesRound.ended = true; setStatus('minesStatus', `Cashed out for ${money(won)}.`, 'win'); renderMines(); }
 
-function withdraw() {
-  const user = els.withdrawUser.value.trim();
-  const amount = Math.floor(Number(els.withdrawAmount.value));
-  if (!user) return toast('Enter your Minecraft username first.');
-  if (!amount || amount <= 0) return toast('Enter a valid withdrawal amount.');
-  if (amount > state.balance) return toast('Not enough arcade balance.');
-  state.balance -= amount;
-  addXp(8, false);
-  addLog(`<b>Payout instruction:</b> /pay ${user} ${amount.toLocaleString()} DonutSMP cash.`);
-  els.withdrawAmount.value = '';
-  toast('Withdrawal created. Cashier system should run the payout command.');
-}
+function card() { const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']; const suits = ['♠','♥','♦','♣']; return { rank: ranks[randInt(13)], suit: suits[randInt(4)] }; }
+function handValue(hand) { let total = 0, aces = 0; hand.forEach(c => { if (c.rank === 'A') { total += 11; aces++; } else if (['J','Q','K'].includes(c.rank)) total += 10; else total += Number(c.rank); }); while (total > 21 && aces) { total -= 10; aces--; } return total; }
+function renderCards(id, hand, hideFirst = false) { const el = $(id); if (!el) return; el.innerHTML = hand.map((c, i) => `<div class="card ${['♥','♦'].includes(c.suit) ? 'red' : ''}">${hideFirst && i === 0 ? '?' : c.rank + '<small>' + c.suit + '</small>'}</div>`).join(''); }
+function renderBlackjack(hide = false) { if (!blackjackRound) return; renderCards('dealerCards', blackjackRound.dealer, hide); renderCards('playerCards', blackjackRound.player); if ($('playerScore')) $('playerScore').textContent = '(' + handValue(blackjackRound.player) + ')'; if ($('dealerScore')) $('dealerScore').textContent = hide ? '' : '(' + handValue(blackjackRound.dealer) + ')'; }
+function dealBlackjack() { const bet = getBet('blackjackBet'); const err = chargeBet(bet); if (err) return toast(err); blackjackRound = { bet, player: [card(), card()], dealer: [card(), card()], over: false }; renderBlackjack(true); setStatus('blackjackStatus', 'Hit or stand. Blackjack pays 2x in this prototype.'); }
+function hitBlackjack() { if (!blackjackRound || blackjackRound.over) return toast('Deal first.'); blackjackRound.player.push(card()); const v = handValue(blackjackRound.player); renderBlackjack(true); if (v > 21) { blackjackRound.over = true; addLog(`<b>Blackjack:</b> busted and lost ${money(blackjackRound.bet)}.`); setStatus('blackjackStatus', 'Bust. Dealer wins.', 'lose'); renderBlackjack(false); } }
+function standBlackjack() { if (!blackjackRound || blackjackRound.over) return toast('Deal first.'); while (handValue(blackjackRound.dealer) < 17) blackjackRound.dealer.push(card()); const p = handValue(blackjackRound.player), d = handValue(blackjackRound.dealer); blackjackRound.over = true; renderBlackjack(false); if (d > 21 || p > d) { const won = pay(blackjackRound.bet * 1.92, 'Blackjack'); setStatus('blackjackStatus', `You win ${money(won)}.`, 'win'); } else if (p === d) { state.balance += blackjackRound.bet; addLog('<b>Blackjack:</b> push, bet returned.'); render(); setStatus('blackjackStatus', 'Push. Bet returned.'); } else { addLog(`<b>Blackjack:</b> lost ${money(blackjackRound.bet)}.`); setStatus('blackjackStatus', 'Dealer wins.', 'lose'); } }
 
-function dailyBonus() {
-  const today = new Date().toDateString();
-  if (state.lastBonus === today) return toast('Daily bonus already claimed today.');
-  state.lastBonus = today;
-  const bonus = 500;
-  state.balance += bonus;
-  addXp(15, false);
-  addLog(`<b>Daily bonus:</b> ${money(bonus)} claimed.`);
-  toast('Daily bonus claimed!');
-}
+function flipCoin(choice) { const bet = getBet('coinBet'); const err = chargeBet(bet); if (err) return toast(err); const result = Math.random() < 0.5 ? 'Heads' : 'Tails'; if ($('coinDisplay')) $('coinDisplay').textContent = result === 'Heads' ? 'H' : 'T'; if (choice === result) { const won = pay(bet * 1.92, 'Coinflip'); setStatus('coinStatus', `${result}. You won ${money(won)}.`, 'win'); } else { addLog(`<b>Coinflip:</b> ${result}, lost ${money(bet)}.`); setStatus('coinStatus', `${result}. You lost.`, 'lose'); } }
 
-function switchTab(target) {
-  document.querySelectorAll('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.target === target));
-  document.querySelectorAll('.game-stage').forEach(stage => stage.classList.toggle('active', stage.id === target));
-}
+function baccarat(side) { const bet = getBet('baccaratBet'); const err = chargeBet(bet); if (err) return toast(err); const player = [card(), card()], banker = [card(), card()]; const ps = handValue(player) % 10, bs = handValue(banker) % 10; renderCards('baccaratPlayerCards', player); renderCards('baccaratBankerCards', banker); if ($('baccaratPlayerScore')) $('baccaratPlayerScore').textContent = '(' + ps + ')'; if ($('baccaratBankerScore')) $('baccaratBankerScore').textContent = '(' + bs + ')'; const winner = ps === bs ? 'Tie' : ps > bs ? 'Player' : 'Banker'; if (side === winner) { const mult = side === 'Tie' ? 8 : side === 'Banker' ? 1.82 : 1.92; const won = pay(bet * mult, 'Baccarat'); setStatus('baccaratStatus', `${winner} wins. You won ${money(won)}.`, 'win'); } else { addLog(`<b>Baccarat:</b> ${winner} won, lost ${money(bet)}.`); setStatus('baccaratStatus', `${winner} wins. You lost.`, 'lose'); } }
 
-// Mines
-function renderMines() {
-  const board = document.getElementById('minesBoard');
-  board.innerHTML = '';
-  for (let i = 0; i < MINES_TILE_COUNT; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'tile';
-    btn.textContent = minesRound?.revealed.includes(i) ? '✓' : '?';
-    if (minesRound?.ended && minesRound.mines.includes(i)) { btn.textContent = '✕'; btn.classList.add('mine'); }
-    if (minesRound?.revealed.includes(i)) btn.classList.add('safe');
-    btn.disabled = !minesRound || minesRound.ended || minesRound.revealed.includes(i);
-    btn.addEventListener('click', () => pickMineTile(i));
-    board.appendChild(btn);
-  }
-}
+function buildPlinko() { const board = $('plinkoBoard'); if (!board) return; board.innerHTML = ''; for (let r = 0; r < 7; r++) { const row = document.createElement('div'); row.className = 'peg-row'; for (let c = 0; c <= r; c++) row.innerHTML += '<span></span>'; board.appendChild(row); } }
+function dropPlinko() { const bet = getBet('plinkoBet'); const err = chargeBet(bet); if (err) return toast(err); let pos = 4; for (let i = 0; i < 8; i++) pos += Math.random() < 0.5 ? -1 : 1; pos = clamp(pos, 0, 8); const mults = [0.2,0.6,1.1,1.8,3.2,1.8,1.1,0.6,0.2]; const won = pay(bet * mults[pos], 'Plinko'); document.querySelectorAll('.plinko-slots span').forEach((s, i) => s.classList.toggle('hit', i === pos)); setStatus('plinkoStatus', `Landed on ${mults[pos]}x. Paid ${money(won)}.`, mults[pos] >= 1.1 ? 'win' : 'lose'); }
 
-function startMines() {
-  const bet = getBet('minesBet');
-  const mineCount = Number(document.getElementById('minesCount').value);
-  const err = chargeBet(bet);
-  if (err) return toast(err);
-  const mines = new Set();
-  while (mines.size < mineCount) mines.add(randInt(MINES_TILE_COUNT));
-  minesRound = { bet, mineCount, mines: [...mines], revealed: [], ended: false, mult: 1 };
-  setStatus('minesStatus', `Round started. ${mineCount} mines hidden. Current cashout: ${money(bet)}.`);
-  renderMines();
-}
+function updateDiceStatus() { if (!$('diceTarget')) return; const target = clamp(Number($('diceTarget').value), 5, 95); $('diceTarget').value = target; const chance = (100 - target) / 100; setStatus('diceStatus', `Win chance: ${(chance * 100).toFixed(1)}% · Payout: ${payoutMultiplier(chance).toFixed(2)}x.`); }
+function rollDice() { const bet = getBet('diceBet'); const err = chargeBet(bet); if (err) return toast(err); const target = clamp(Number($('diceTarget').value), 5, 95); const roll = Math.floor(Math.random() * 10000) / 100; if ($('diceResult')) $('diceResult').textContent = roll.toFixed(2); if (roll > target) { const won = pay(bet * payoutMultiplier((100 - target) / 100), 'Dice'); setStatus('diceStatus', `Rolled ${roll.toFixed(2)}. Won ${money(won)}.`, 'win'); } else { addLog(`<b>Dice:</b> rolled ${roll.toFixed(2)} and lost ${money(bet)}.`); setStatus('diceStatus', `Rolled ${roll.toFixed(2)}. Needed over ${target}.`, 'lose'); } }
 
-function currentMinesMult() {
-  if (!minesRound) return 1;
-  const safeTotal = MINES_TILE_COUNT - minesRound.mineCount;
-  const safePicked = minesRound.revealed.length;
-  if (safePicked === 0) return 1;
-  let survivalOdds = 1;
-  for (let i = 0; i < safePicked; i++) survivalOdds *= (safeTotal - i) / (MINES_TILE_COUNT - i);
-  return payoutMultiplier(survivalOdds);
-}
-
-function pickMineTile(i) {
-  if (!minesRound || minesRound.ended) return;
-  if (minesRound.mines.includes(i)) {
-    minesRound.ended = true;
-    addLog(`<b>Mines:</b> lost ${money(minesRound.bet)}.`);
-    setStatus('minesStatus', `Boom. You hit a mine and lost ${money(minesRound.bet)}.`, 'lose');
-    renderMines();
-    return;
-  }
-  minesRound.revealed.push(i);
-  const mult = currentMinesMult();
-  const cash = minesRound.bet * mult;
-  setStatus('minesStatus', `Safe tile. Multiplier: ${mult.toFixed(2)}x · Cashout: ${money(cash)}.`, 'win');
-  renderMines();
-}
-
-function cashoutMines() {
-  if (!minesRound || minesRound.ended || minesRound.revealed.length === 0) return toast('Reveal at least one safe tile first.');
-  const amount = minesRound.bet * currentMinesMult();
-  minesRound.ended = true;
-  pay(amount, 'Mines cashout');
-  setStatus('minesStatus', `Cashed out for ${money(amount)}.`, 'win');
-  renderMines();
-}
-
-// Dice
-function updateDiceStatus() {
-  const target = clamp(Number(document.getElementById('diceTarget').value), 5, 95);
-  document.getElementById('diceTarget').value = target;
-  const winChance = (100 - target) / 100;
-  const mult = payoutMultiplier(winChance);
-  setStatus('diceStatus', `Win chance: ${(winChance * 100).toFixed(1)}% · Payout: ${mult.toFixed(2)}x.`);
-}
-
-function rollDice() {
-  const bet = getBet('diceBet');
-  const err = chargeBet(bet);
-  if (err) return toast(err);
-  const target = clamp(Number(document.getElementById('diceTarget').value), 5, 95);
-  const roll = Math.floor(Math.random() * 10000) / 100;
-  const result = document.getElementById('diceResult');
-  result.textContent = roll.toFixed(2);
-  if (roll > target) {
-    const mult = payoutMultiplier((100 - target) / 100);
-    const won = pay(bet * mult, 'Dice');
-    setStatus('diceStatus', `Rolled over ${target}. Won ${money(won)} at ${mult.toFixed(2)}x.`, 'win');
-  } else {
-    addLog(`<b>Dice:</b> rolled ${roll.toFixed(2)} and lost ${money(bet)}.`);
-    setStatus('diceStatus', `Rolled ${roll.toFixed(2)}. Needed over ${target}.`, 'lose');
-  }
-}
-
-// Pulse
-function configurePulseZone() {
-  const diff = document.getElementById('pulseDifficulty').value;
-  const width = diff === 'easy' ? 24 : diff === 'normal' ? 16 : 10;
-  const left = 50 - width / 2;
-  document.getElementById('pulseZone').style.left = left + '%';
-  document.getElementById('pulseZone').style.width = width + '%';
-  return { diff, width, left, mult: payoutMultiplier(width / 100) };
-}
-
-function startPulse() {
-  const bet = getBet('pulseBet');
-  const err = chargeBet(bet);
-  if (err) return toast(err);
-  const cfg = configurePulseZone();
-  pulseRound = { bet, ...cfg, pos: 0, dir: 1, running: true };
-  const dot = document.getElementById('pulseDot');
-  clearInterval(pulseAnim);
-  pulseAnim = setInterval(() => {
-    if (!pulseRound?.running) return;
-    pulseRound.pos += pulseRound.dir * (pulseRound.diff === 'hard' ? 2.7 : pulseRound.diff === 'normal' ? 2.1 : 1.6);
-    if (pulseRound.pos >= 95 || pulseRound.pos <= 0) pulseRound.dir *= -1;
-    pulseRound.pos = clamp(pulseRound.pos, 0, 95);
-    dot.style.left = pulseRound.pos + '%';
-  }, 16);
-  setStatus('pulseStatus', `Pulse running. Stop inside green for ${pulseRound.mult.toFixed(2)}x.`);
-}
-
-function stopPulse() {
-  if (!pulseRound?.running) return toast('Start a pulse round first.');
-  pulseRound.running = false;
-  clearInterval(pulseAnim);
-  const center = pulseRound.pos + 2.5;
-  const inside = center >= pulseRound.left && center <= pulseRound.left + pulseRound.width;
-  if (inside) {
-    const won = pay(pulseRound.bet * pulseRound.mult, 'Pulse');
-    setStatus('pulseStatus', `Perfect stop. Won ${money(won)} at ${pulseRound.mult.toFixed(2)}x.`, 'win');
-  } else {
-    addLog(`<b>Pulse:</b> missed the zone and lost ${money(pulseRound.bet)}.`);
-    setStatus('pulseStatus', `Missed the green zone. Lost ${money(pulseRound.bet)}.`, 'lose');
-  }
-}
-
-// Vault
-function renderVault() {
-  const board = document.getElementById('vaultDoors');
-  board.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'door';
-    btn.textContent = vaultRound?.opened.includes(i) ? '✓' : '▣';
-    if (vaultRound?.opened.includes(i)) btn.classList.add('safe');
-    if (vaultRound?.ended && vaultRound.badDoor === i) { btn.textContent = '✕'; btn.classList.add('bust'); }
-    btn.disabled = !vaultRound || vaultRound.ended || vaultRound.opened.includes(i);
-    btn.addEventListener('click', () => openVaultDoor(i));
-    board.appendChild(btn);
-  }
-}
-
-function startVault() {
-  const bet = getBet('vaultBet');
-  const err = chargeBet(bet);
-  if (err) return toast(err);
-  vaultRound = { bet, level: 1, opened: [], badDoor: randInt(4), ended: false, mult: 1 };
-  setStatus('vaultStatus', 'Vault started. Open a door or cash out after a safe pick.');
-  renderVault();
-}
-
-function vaultMult() {
-  const safeChance = Math.pow(0.75, vaultRound.opened.length);
-  return payoutMultiplier(safeChance);
-}
-
-function openVaultDoor(i) {
-  if (!vaultRound || vaultRound.ended) return;
-  if (i === vaultRound.badDoor) {
-    vaultRound.ended = true;
-    addLog(`<b>Vault:</b> busted and lost ${money(vaultRound.bet)}.`);
-    setStatus('vaultStatus', `Bad door. Lost ${money(vaultRound.bet)}.`, 'lose');
-    renderVault();
-    return;
-  }
-  vaultRound.opened.push(i);
-  vaultRound.mult = vaultMult();
-  vaultRound.badDoor = randInt(4);
-  setStatus('vaultStatus', `Safe door. Cashout: ${money(vaultRound.bet * vaultRound.mult)} (${vaultRound.mult.toFixed(2)}x).`, 'win');
-  renderVault();
-}
-
-function cashoutVault() {
-  if (!vaultRound || vaultRound.ended || vaultRound.opened.length === 0) return toast('Open at least one safe door first.');
-  const won = pay(vaultRound.bet * vaultRound.mult, 'Vault cashout');
-  vaultRound.ended = true;
-  setStatus('vaultStatus', `Cashed out for ${money(won)}.`, 'win');
-  renderVault();
-}
-
-// Events
-document.getElementById('openWalletBtn').addEventListener('click', openWallet);
-document.getElementById('heroWalletBtn').addEventListener('click', openWallet);
-document.getElementById('closeWalletBtn').addEventListener('click', closeWallet);
-document.getElementById('depositBtn').addEventListener('click', deposit);
-document.getElementById('withdrawBtn').addEventListener('click', withdraw);
-document.getElementById('dailyBonusBtn').addEventListener('click', dailyBonus);
+on('depositBtn', 'click', deposit); on('withdrawBtn', 'click', withdraw); on('dailyBonusBtn', 'click', dailyBonus); on('minesStart', 'click', startMines); on('minesCashout', 'click', cashoutMines); on('blackjackDeal', 'click', dealBlackjack); on('blackjackHit', 'click', hitBlackjack); on('blackjackStand', 'click', standBlackjack); on('coinHeads', 'click', () => flipCoin('Heads')); on('coinTails', 'click', () => flipCoin('Tails')); on('betPlayer', 'click', () => baccarat('Player')); on('betBanker', 'click', () => baccarat('Banker')); on('betTie', 'click', () => baccarat('Tie')); on('plinkoDrop', 'click', dropPlinko); on('diceRoll', 'click', rollDice); on('diceTarget', 'input', updateDiceStatus);
 document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.target)));
-document.getElementById('minesStart').addEventListener('click', startMines);
-document.getElementById('minesCashout').addEventListener('click', cashoutMines);
-document.getElementById('diceRoll').addEventListener('click', rollDice);
-document.getElementById('diceTarget').addEventListener('input', updateDiceStatus);
-document.getElementById('pulseStart').addEventListener('click', startPulse);
-document.getElementById('pulseStop').addEventListener('click', stopPulse);
-document.getElementById('pulseDifficulty').addEventListener('change', configurePulseZone);
-document.getElementById('vaultStart').addEventListener('click', startVault);
-document.getElementById('vaultCashout').addEventListener('click', cashoutVault);
-
-render();
-renderMines();
-renderVault();
-updateDiceStatus();
-configurePulseZone();
+render(); renderMines(); buildPlinko(); updateDiceStatus(); openHashGame();

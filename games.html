@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Games | DonutVault</title>
+  <link rel="icon" href="assets/donutvault-logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <nav class="nav"><a class="brand" href="index.html"><img class="brand-logo" src="assets/donutvault-logo.svg" alt="DonutVault logo" /><div><strong>DonutVault</strong><span>DonutSMP Arcade</span></div></a><div class="nav-links"><a href="index.html">Home</a><a href="games.html">Games</a><a href="wallet.html">Wallet</a><a href="about.html">About</a></div><div class="nav-actions"><button class="ghost" id="dailyBonusBtn"><span class="i i-gift"></span>Daily Bonus</button><a class="primary small" href="wallet.html"><span class="i i-wallet"></span>Wallet</a></div></nav>
+  <main>
+    <section class="page-hero"><p class="eyebrow">Arcade floor</p><h1>Pick a game. Chase the cashout.</h1><p class="subtext">Balanced visuals: dark base for focus, gold/green reward cues, cyan interaction states, and square/rounded cards for fast scanning.</p></section>
+    <section class="section" id="games">
+      <div class="section-head"><div><p class="eyebrow">Games</p><h2>Six playable modes</h2></div><div class="stats-pill" id="sessionStats">0 plays · $0 wagered</div></div>
+      <div class="game-tabs">
+        <button class="tab active" data-target="minesGame"><span class="i i-mines"></span>Mines</button>
+        <button class="tab" data-target="blackjackGame"><span class="i i-cards"></span>Blackjack</button>
+        <button class="tab" data-target="coinflipGame"><span class="i i-coin"></span>Coinflip</button>
+        <button class="tab" data-target="baccaratGame"><span class="i i-diamond"></span>Baccarat</button>
+        <button class="tab" data-target="plinkoGame"><span class="i i-plinko"></span>Plinko</button>
+        <button class="tab" data-target="diceGame"><span class="i i-dice"></span>Dice</button>
+      </div>
+
+      <div class="game-stage active" id="minesGame"><div class="game-info"><div><h3><span class="game-title-icon i i-mines"></span>Mines</h3><p>5x5 square grid. Reveal safe tiles, then cash out before you hit a mine.</p></div><span>5x5 board</span></div><div class="controls"><label>Bet</label><input id="minesBet" type="number" min="1" value="1000" /><label>Mines</label><select id="minesCount"><option>3</option><option>5</option><option>8</option></select><button class="primary" id="minesStart"><span class="i i-play"></span>Start</button><button class="secondary" id="minesCashout"><span class="i i-cash"></span>Cash out</button></div><div class="mini-status" id="minesStatus">Place a bet and start a round.</div><div class="mines-wrap"><div class="mines-board" id="minesBoard"></div></div></div>
+
+      <div class="game-stage" id="blackjackGame"><div class="game-info"><div><h3><span class="game-title-icon i i-cards"></span>Blackjack</h3><p>Get closer to 21 than the dealer without busting.</p></div><span>Classic 21</span></div><div class="controls"><label>Bet</label><input id="blackjackBet" type="number" min="1" value="1000" /><button class="primary" id="blackjackDeal"><span class="i i-play"></span>Deal</button><button class="secondary" id="blackjackHit">Hit</button><button class="secondary" id="blackjackStand">Stand</button></div><div class="card-table"><div><h4>Dealer <span id="dealerScore"></span></h4><div class="cards" id="dealerCards"></div></div><div><h4>You <span id="playerScore"></span></h4><div class="cards" id="playerCards"></div></div></div><div class="mini-status" id="blackjackStatus">Deal a hand to begin.</div></div>
+
+      <div class="game-stage" id="coinflipGame"><div class="game-info"><div><h3><span class="game-title-icon i i-coin"></span>Coinflip</h3><p>Pick heads or tails. Fast, clean, simple.</p></div><span>1.92x win</span></div><div class="controls"><label>Bet</label><input id="coinBet" type="number" min="1" value="1000" /><button class="primary" id="coinHeads">Heads</button><button class="secondary" id="coinTails">Tails</button></div><div class="coin-display" id="coinDisplay">?</div><div class="mini-status" id="coinStatus">Choose a side.</div></div>
+
+      <div class="game-stage" id="baccaratGame"><div class="game-info"><div><h3><span class="game-title-icon i i-diamond"></span>Baccarat</h3><p>Closest to 9 wins. Bet player, banker, or tie.</p></div><span>Card draw</span></div><div class="controls"><label>Bet</label><input id="baccaratBet" type="number" min="1" value="1000" /><button class="primary" id="betPlayer">Player</button><button class="secondary" id="betBanker">Banker</button><button class="secondary" id="betTie">Tie</button></div><div class="card-table"><div><h4>Player <span id="baccaratPlayerScore"></span></h4><div class="cards" id="baccaratPlayerCards"></div></div><div><h4>Banker <span id="baccaratBankerScore"></span></h4><div class="cards" id="baccaratBankerCards"></div></div></div><div class="mini-status" id="baccaratStatus">Pick a side.</div></div>
+
+      <div class="game-stage" id="plinkoGame"><div class="game-info"><div><h3><span class="game-title-icon i i-plinko"></span>Plinko</h3><p>Drop a chip through the board and land on a multiplier.</p></div><span>Multiplier slots</span></div><div class="controls"><label>Bet</label><input id="plinkoBet" type="number" min="1" value="1000" /><button class="primary" id="plinkoDrop"><span class="i i-play"></span>Drop chip</button></div><div class="plinko-board" id="plinkoBoard"></div><div class="plinko-slots"><span>0.2x</span><span>0.6x</span><span>1.1x</span><span>1.8x</span><span>3.2x</span><span>1.8x</span><span>1.1x</span><span>0.6x</span><span>0.2x</span></div><div class="mini-status" id="plinkoStatus">Drop a chip.</div></div>
+
+      <div class="game-stage" id="diceGame"><div class="game-info"><div><h3><span class="game-title-icon i i-dice"></span>Dice</h3><p>Pick a target. Roll over it to win.</p></div><span>Adjustable odds</span></div><div class="controls"><label>Bet</label><input id="diceBet" type="number" min="1" value="1000" /><label>Roll over</label><input id="diceTarget" type="number" min="5" max="95" value="55" /><button class="primary" id="diceRoll"><span class="i i-dice"></span>Roll Dice</button></div><div class="dice-result" id="diceResult">--</div><div class="mini-status" id="diceStatus">Win chance and payout update from your target.</div></div>
+    </section>
+  </main>
+  <div class="toast" id="toast"></div><script src="app.js"></script>
+</body>
+</html>
